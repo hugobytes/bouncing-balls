@@ -1,0 +1,32 @@
+{
+  "name": "bouncing-balls",
+  "version": "1.0.0",
+  "description": "First attempt using canvas, making bouncing balls",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hubofhugo/bouncing-balls.git"
+  },
+  "author": "Hugo Brook",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hubofhugo/bouncing-balls/issues"
+  },
+  "homepage": "https://github.com/hubofhugo/bouncing-balls#readme",
+  "devDependencies": {
+    "@types/jest": "^20.0.4",
+    "jest": "^20.0.4",
+    "ts-jest": "^20.0.7",
+    "typescript": "^2.4.2"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": ["ts", "tsx", "js"]
+  }
+}

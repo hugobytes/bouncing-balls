@@ -1,3 +1,5 @@
+// TODO: https://coderwall.com/p/vmkk6a/how-to-make-the-canvas-not-look-like-crap-on-retina or https://stackoverflow.com/questions/15661339/how-do-i-fix-blurry-text-in-my-html5-canvas
+// TODO: https://stackoverflow.com/documentation/typescript/7456/unit-testing#t=20170720213125066547 or https://journal.artfuldev.com/write-tests-for-typescript-projects-with-mocha-and-chai-in-typescript-86e053bdb2b6
 /**
  * @author Hugo Brook : Bouncing Balls using TypeScript, html, css and canvas
  * The main structure of this code followed the best two tutorials on canvas I could find (I am new to canvas, but not TypeScript):
