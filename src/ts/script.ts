@@ -53,8 +53,16 @@ const canvasWidth = canvas.width;
  */
 const canvasHeight = canvas.height;
 
-const reqAnimationFrame = window.requestAnimationFrame;// || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+/**
+ * Checks for different browsers
+ * @type {((callback:FrameRequestCallback)=>number)|any}
+ */
+const reqAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
+/**
+ * Ball class to construct new balls
+ * @class Ball
+ */
 class Ball {
     private radius: number;
     private speed: number;
@@ -161,10 +169,8 @@ class Ball {
  * Draw each individual ball
  * @method drawBall
  */
-function addNewBall(xPos, yPos) {
+function addNewBall(xPos, yPos, xVelocity, yVelocity) {
     let colour = colours[randomIntFromInterval(0, colours.length)];
-    let xVelocity = randomIntFromInterval(-10,10);
-    let yVelocity = randomIntFromInterval(-10,10);
 
     /**
      * If randomBallSize input is checked, generate random size balls, otherwise use medium sizes ball
@@ -224,7 +230,46 @@ function draw() {
 document.getElementById("myCanvas").addEventListener("click", (e) => {
     let xPos = e.clientX;
     let yPos = e.clientY;
-    addNewBall(xPos, yPos);
+
+    /**
+     * Random direction (x and y velocities)
+     * @type {number}
+     */
+    let xVelocity = randomIntFromInterval(-10,10);
+    let yVelocity = randomIntFromInterval(-10,10);
+
+    if (!document.getElementById("slingshot").checked) {
+        addNewBall(xPos, yPos, xVelocity, yVelocity);
+    }
+});
+
+let xPosStart, yPosStart;
+
+/**
+ * Listeners for slingshot mode
+ */
+document.getElementById("myCanvas").addEventListener("mousedown", (e) => {
+    this.xPosStart = e.clientX;
+    this.yPosStart = e.clientY;
+});
+
+document.getElementById("myCanvas").addEventListener("mouseup", (e) => {
+    let xPos = e.clientX;
+    let yPos = e.clientY;
+    let xPosEnd = e.clientX;
+    let yPosEnd = e.clientY;
+
+    /**
+     * Velocities increase the more you drag the slingshot
+     * @type {number}
+     * @type {number}
+     */
+    let xVelocity = (this.xPosStart - xPosEnd)/10;
+    let yVelocity = (this.yPosStart - yPosEnd)/10;
+
+    if (document.getElementById("slingshot").checked) {
+        addNewBall(xPos, yPos, xVelocity, yVelocity);
+    }
 });
 
 /**

@@ -7,7 +7,7 @@ var colours = ["#ff6138", "#ffff9d", "#beeb9f", "#79bd8f", "#00a388", "#ff9ddb"]
 var balls = [];
 var canvasWidth = canvas.width;
 var canvasHeight = canvas.height;
-var reqAnimationFrame = window.requestAnimationFrame;
+var reqAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 var Ball = (function () {
     function Ball(xPos, yPos, colour, xVelocity, yVelocity, radius) {
         var _this = this;
@@ -57,10 +57,8 @@ var Ball = (function () {
     }
     return Ball;
 }());
-function addNewBall(xPos, yPos) {
+function addNewBall(xPos, yPos, xVelocity, yVelocity) {
     var colour = colours[randomIntFromInterval(0, colours.length)];
-    var xVelocity = randomIntFromInterval(-10, 10);
-    var yVelocity = randomIntFromInterval(-10, 10);
     var radius = document.getElementById('randomBallSize').checked ? randomIntFromInterval(5, 15) : 10;
     var ball = new Ball(xPos, yPos, colour, xVelocity, yVelocity, radius);
     balls.push(ball);
@@ -81,7 +79,27 @@ function draw() {
 document.getElementById("myCanvas").addEventListener("click", function (e) {
     var xPos = e.clientX;
     var yPos = e.clientY;
-    addNewBall(xPos, yPos);
+    var xVelocity = randomIntFromInterval(-10, 10);
+    var yVelocity = randomIntFromInterval(-10, 10);
+    if (!document.getElementById("slingshot").checked) {
+        addNewBall(xPos, yPos, xVelocity, yVelocity);
+    }
+});
+var xPosStart, yPosStart;
+document.getElementById("myCanvas").addEventListener("mousedown", function (e) {
+    _this.xPosStart = e.clientX;
+    _this.yPosStart = e.clientY;
+});
+document.getElementById("myCanvas").addEventListener("mouseup", function (e) {
+    var xPos = e.clientX;
+    var yPos = e.clientY;
+    var xPosEnd = e.clientX;
+    var yPosEnd = e.clientY;
+    var xVelocity = (_this.xPosStart - xPosEnd) / 10;
+    var yVelocity = (_this.yPosStart - yPosEnd) / 10;
+    if (document.getElementById("slingshot").checked) {
+        addNewBall(xPos, yPos, xVelocity, yVelocity);
+    }
 });
 document.getElementById("clear").addEventListener("click", function (e) {
     _this.balls = [];
