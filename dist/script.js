@@ -64,7 +64,8 @@ var Line = (function () {
             context.beginPath();
             context.moveTo(_this.xLineStart, _this.yLineStart);
             context.lineTo(_this.xLineEnd, _this.yLineEnd);
-            context.strokeStyle = "#FF0000";
+            context.lineWidth = 2;
+            context.strokeStyle = "rgba(255,255,255,0.25)";
             context.stroke();
         };
         this.xLineStart = xLineStart;

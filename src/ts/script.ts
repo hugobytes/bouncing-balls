@@ -186,7 +186,8 @@ class Line {
         context.beginPath();
         context.moveTo(this.xLineStart, this.yLineStart);
         context.lineTo(this.xLineEnd, this.yLineEnd);
-        context.strokeStyle="#FF0000";
+        context.lineWidth = 2;
+        context.strokeStyle = "rgba(255,255,255,0.25)";
         context.stroke();
     }
 }
