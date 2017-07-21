@@ -1,0 +1,43 @@
+canvas {
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+html, body {
+    width:  100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /*  Disable scrollbars */
+    display: block;  /* No floating content on sides */
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+.controls-container {
+    width: 100%;
+    z-index: 1;
+    top: 0;
+    color: white;
+    font-family: monospace;
+    border-radius: 0 0 4px 4px;
+    position: absolute;
+}
+
+.controls {
+    background: rgba(255,255,255,0.15);
+    padding: 15px;
+    form {
+        display: inline-block;
+    }
+    #clear {
+        float: right;
+    }
+    input {
+        margin-right: 15px;
+    }
+}

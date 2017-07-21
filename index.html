@@ -3,13 +3,20 @@
 
 <head>
     <title>Bouncing Balls</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="dist/style.css">
 </head>
 
 <body>
 <div id="container">
+    <div class="controls-container">
+        <div class="controls">
+            Random ball size:<input id="randomBallSize" type="checkbox">
+            Slingshot mode:<input id="slingShotMode" type="checkbox">
+            <button id="clear">Clear</button>
+        </div>
+    </div>
     <canvas id="myCanvas"></canvas>
 </div>
-<script src="script.js"></script>
+<script src="dist/script.js"></script>
 </body>
 </html>

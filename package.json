@@ -4,7 +4,10 @@
   "description": "First attempt using canvas, making bouncing balls",
   "main": "script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "css": "node-sass src/scss/style.scss -o dist",
+    "css:watch": "npm run css && node-sass src/scss/style.scss -wo dist",
+    "start": "npm run css && node-sass src/scss/style.scss -wo dist && tsc -w"
   },
   "repository": {
     "type": "git",
@@ -20,7 +23,8 @@
     "@types/jest": "^20.0.4",
     "jest": "^20.0.4",
     "ts-jest": "^20.0.7",
-    "typescript": "^2.4.2"
+    "typescript": "^2.4.2",
+    "node-sass": "^3.4.2"
   },
   "jest": {
     "transform": {
