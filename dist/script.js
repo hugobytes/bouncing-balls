@@ -57,6 +57,23 @@ var Ball = (function () {
     }
     return Ball;
 }());
+var Line = (function () {
+    function Line(xLineStart, yLineStart, xLineEnd, yLineEnd) {
+        var _this = this;
+        this.drawLine = function () {
+            context.beginPath();
+            context.moveTo(_this.xLineStart, _this.yLineStart);
+            context.lineTo(_this.xLineEnd, _this.yLineEnd);
+            context.strokeStyle = "#FF0000";
+            context.stroke();
+        };
+        this.xLineStart = xLineStart;
+        this.yLineStart = yLineStart;
+        this.xLineEnd = xLineEnd;
+        this.yLineEnd = yLineEnd;
+    }
+    return Line;
+}());
 function addNewBall(xPos, yPos, xVelocity, yVelocity) {
     var colour = colours[randomIntFromInterval(0, colours.length)];
     var radius = document.getElementById('randomBallSize').checked ? randomIntFromInterval(5, 15) : 10;
@@ -65,16 +82,6 @@ function addNewBall(xPos, yPos, xVelocity, yVelocity) {
 }
 function randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
-}
-function draw() {
-    context.clearRect(0, 0, canvasWidth, canvasHeight);
-    context.fillStyle = "#333";
-    context.fillRect(0, 0, canvasWidth, canvasHeight);
-    for (var i = 0; i < balls.length; i++) {
-        var myBall = balls[i];
-        myBall.update();
-    }
-    reqAnimationFrame(draw);
 }
 document.getElementById("myCanvas").addEventListener("click", function (e) {
     var xPos = e.clientX;
@@ -86,15 +93,28 @@ document.getElementById("myCanvas").addEventListener("click", function (e) {
     }
 });
 var xPosStart, yPosStart;
+var xLineStart, yLineStart;
+var line = null;
+var startLine = false;
 document.getElementById("myCanvas").addEventListener("mousedown", function (e) {
     _this.xPosStart = e.clientX;
     _this.yPosStart = e.clientY;
+    xLineStart = e.clientX;
+    yLineStart = e.clientY;
+    startLine = true;
+});
+document.getElementById("myCanvas").addEventListener("mousemove", function (e) {
+    if (document.getElementById("slingshot").checked && startLine === true) {
+        line = new Line(xLineStart, yLineStart, e.clientX, e.clientY);
+    }
 });
 document.getElementById("myCanvas").addEventListener("mouseup", function (e) {
     var xPos = e.clientX;
     var yPos = e.clientY;
     var xPosEnd = e.clientX;
     var yPosEnd = e.clientY;
+    startLine = false;
+    line = null;
     var xVelocity = (_this.xPosStart - xPosEnd) / 10;
     var yVelocity = (_this.yPosStart - yPosEnd) / 10;
     if (document.getElementById("slingshot").checked) {
@@ -104,4 +124,17 @@ document.getElementById("myCanvas").addEventListener("mouseup", function (e) {
 document.getElementById("clear").addEventListener("click", function (e) {
     _this.balls = [];
 });
+function draw() {
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
+    context.fillStyle = "#333";
+    context.fillRect(0, 0, canvasWidth, canvasHeight);
+    for (var i = 0; i < balls.length; i++) {
+        var myBall = balls[i];
+        myBall.update();
+    }
+    if (line != null) {
+        line.drawLine();
+    }
+    reqAnimationFrame(draw);
+}
 draw();

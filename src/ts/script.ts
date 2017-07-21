@@ -166,6 +166,32 @@ class Ball {
 }
 
 /**
+ * Line drawn by dragging mouse in slingshot mode
+ * @class
+ */
+class Line {
+    private xLineStart: number;
+    private yLineStart: number;
+    private xLineEnd: number;
+    private yLineEnd: number;
+
+    constructor(xLineStart, yLineStart, xLineEnd, yLineEnd) {
+        this.xLineStart = xLineStart;
+        this.yLineStart = yLineStart;
+        this.xLineEnd = xLineEnd;
+        this.yLineEnd = yLineEnd;
+    }
+
+    public drawLine = () => {
+        context.beginPath();
+        context.moveTo(this.xLineStart, this.yLineStart);
+        context.lineTo(this.xLineEnd, this.yLineEnd);
+        context.strokeStyle="#FF0000";
+        context.stroke();
+    }
+}
+
+/**
  * Draw each individual ball
  * @method drawBall
  */
@@ -189,6 +215,82 @@ function addNewBall(xPos, yPos, xVelocity, yVelocity) {
 function randomIntFromInterval(min,max) {
     return Math.floor(Math.random()*(max-min+1)+min);
 }
+
+/**
+ * Add click listener for canvas
+ */
+document.getElementById("myCanvas").addEventListener("click", (e) => {
+    let xPos = e.clientX;
+    let yPos = e.clientY;
+
+    /**
+     * Random direction (x and y velocities)
+     * @type {number}
+     */
+    let xVelocity = randomIntFromInterval(-10,10);
+    let yVelocity = randomIntFromInterval(-10,10);
+
+    if (!document.getElementById("slingshot").checked) {
+        addNewBall(xPos, yPos, xVelocity, yVelocity);
+    }
+});
+
+let xPosStart, yPosStart;
+let xLineStart, yLineStart;
+let line = null;
+let startLine = false;
+
+/**
+ * Listeners for slingshot mode
+ */
+document.getElementById("myCanvas").addEventListener("mousedown", (e) => {
+    this.xPosStart = e.clientX;
+    this.yPosStart = e.clientY;
+    xLineStart = e.clientX;
+    yLineStart = e.clientY;
+    startLine = true;
+});
+
+/**
+ * Draw slingshot line
+ */
+document.getElementById("myCanvas").addEventListener("mousemove", (e) => {
+    if (document.getElementById("slingshot").checked && startLine === true) {
+        line = new Line(xLineStart, yLineStart, e.clientX, e.clientY);
+    }
+});
+
+/**
+ * Release slingshot
+ */
+document.getElementById("myCanvas").addEventListener("mouseup", (e) => {
+    let xPos = e.clientX;
+    let yPos = e.clientY;
+    let xPosEnd = e.clientX;
+    let yPosEnd = e.clientY;
+
+    startLine = false;
+    line = null;
+
+    /**
+     * Velocities increase the more you drag the slingshot
+     * @type {number}
+     * @type {number}
+     */
+    let xVelocity = (this.xPosStart - xPosEnd)/10;
+    let yVelocity = (this.yPosStart - yPosEnd)/10;
+
+    if (document.getElementById("slingshot").checked) {
+        addNewBall(xPos, yPos, xVelocity, yVelocity);
+    }
+});
+
+/**
+ * Add click listener for clear
+ */
+document.getElementById("clear").addEventListener("click", (e) => {
+    this.balls = [];
+});
 
 /**
  * Draw or re-draw the entire canvas
@@ -221,63 +323,16 @@ function draw() {
         let myBall = balls[i];
         myBall.update();
     }
+
+    /**
+     * Draw line
+     */
+    if (line != null) {
+        line.drawLine();
+    }
+
     reqAnimationFrame(draw);
 }
-
-/**
- * Add click listener for canvas
- */
-document.getElementById("myCanvas").addEventListener("click", (e) => {
-    let xPos = e.clientX;
-    let yPos = e.clientY;
-
-    /**
-     * Random direction (x and y velocities)
-     * @type {number}
-     */
-    let xVelocity = randomIntFromInterval(-10,10);
-    let yVelocity = randomIntFromInterval(-10,10);
-
-    if (!document.getElementById("slingshot").checked) {
-        addNewBall(xPos, yPos, xVelocity, yVelocity);
-    }
-});
-
-let xPosStart, yPosStart;
-
-/**
- * Listeners for slingshot mode
- */
-document.getElementById("myCanvas").addEventListener("mousedown", (e) => {
-    this.xPosStart = e.clientX;
-    this.yPosStart = e.clientY;
-});
-
-document.getElementById("myCanvas").addEventListener("mouseup", (e) => {
-    let xPos = e.clientX;
-    let yPos = e.clientY;
-    let xPosEnd = e.clientX;
-    let yPosEnd = e.clientY;
-
-    /**
-     * Velocities increase the more you drag the slingshot
-     * @type {number}
-     * @type {number}
-     */
-    let xVelocity = (this.xPosStart - xPosEnd)/10;
-    let yVelocity = (this.yPosStart - yPosEnd)/10;
-
-    if (document.getElementById("slingshot").checked) {
-        addNewBall(xPos, yPos, xVelocity, yVelocity);
-    }
-});
-
-/**
- * Add click listener for clear
- */
-document.getElementById("clear").addEventListener("click", (e) => {
-    this.balls = [];
-});
 
 /**
  * Draw canvas and start animation process
