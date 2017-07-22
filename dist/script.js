@@ -17,7 +17,7 @@ var line = null;
 var startLine = false;
 var maxBallSzie = 30;
 var minBallSize = 10;
-var reqAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+var reqAnimationFrame = window.requestAnimationFrame;
 var Ball = (function () {
     function Ball(xPos, yPos, colour, xVelocity, yVelocity, radius) {
         var _this = this;

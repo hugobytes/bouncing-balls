@@ -80,7 +80,7 @@ let maxBallSzie = 30; let minBallSize = 10;
  * Checks for different browsers
  * @type {((callback:FrameRequestCallback)=>number)|any}
  */
-const reqAnimationFrame = (<any>window).requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+const reqAnimationFrame = window.requestAnimationFrame;// || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
 /**
  * Ball class to construct new balls
