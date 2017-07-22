@@ -1,12 +1,22 @@
 var _this = this;
 var canvas = document.querySelector("#myCanvas");
 var context = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+var slingshotInputElement = document.getElementById("slingshot");
+var randomBallSizeInput = document.getElementById("randomBallSize");
+var clearButton = document.getElementById("clear");
+var canvasMultiplier = 2;
+canvas.width = window.innerWidth * canvasMultiplier;
+canvas.height = window.innerHeight * canvasMultiplier;
+canvas.style.width = "100%";
+canvas.style.height = "100%";
 var colours = ["#ff6138", "#ffff9d", "#beeb9f", "#79bd8f", "#00a388", "#ff9ddb"];
 var balls = [];
-var canvasWidth = canvas.width;
-var canvasHeight = canvas.height;
+var xSlingshotStart, ySlingshotStart;
+var xLineStart, yLineStart;
+var line = null;
+var startLine = false;
+var maxBallSzie = 30;
+var minBallSize = 10;
 var reqAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 var Ball = (function () {
     function Ball(xPos, yPos, colour, xVelocity, yVelocity, radius) {
@@ -18,7 +28,7 @@ var Ball = (function () {
             var eAngle = Math.PI * 2;
             var counterclockwise = false;
             var gravity = 0.2;
-            var bounce = 0.63 * (30 / (radius + 15));
+            var bounce = minBallSize / (radius + 0.01);
             var traction = 0.8;
             if (_this.xPos + radius >= canvas.width) {
                 _this.xVelocity = -_this.xVelocity * bounce;
@@ -49,8 +59,8 @@ var Ball = (function () {
         };
         this.radius = radius;
         this.speed = 10;
-        this.xPos = xPos;
-        this.yPos = yPos;
+        this.xPos = xPos * canvasMultiplier;
+        this.yPos = yPos * canvasMultiplier;
         this.colour = colour;
         this.xVelocity = xVelocity;
         this.yVelocity = yVelocity;
@@ -65,70 +75,67 @@ var Line = (function () {
             context.moveTo(_this.xLineStart, _this.yLineStart);
             context.lineTo(_this.xLineEnd, _this.yLineEnd);
             context.lineWidth = 2;
-            context.strokeStyle = "rgba(255,255,255,0.25)";
+            context.strokeStyle = "rgba(255,255,255,0.15)";
             context.stroke();
         };
-        this.xLineStart = xLineStart;
-        this.yLineStart = yLineStart;
-        this.xLineEnd = xLineEnd;
-        this.yLineEnd = yLineEnd;
+        this.xLineStart = xLineStart * canvasMultiplier;
+        this.yLineStart = yLineStart * canvasMultiplier;
+        this.xLineEnd = xLineEnd * canvasMultiplier;
+        this.yLineEnd = yLineEnd * canvasMultiplier;
     }
     return Line;
 }());
 function addNewBall(xPos, yPos, xVelocity, yVelocity) {
     var colour = colours[randomIntFromInterval(0, colours.length)];
-    var radius = document.getElementById('randomBallSize').checked ? randomIntFromInterval(5, 15) : 10;
+    var randomBallSizeChecked = randomBallSizeInput.checked;
+    var radius = randomBallSizeChecked ? randomIntFromInterval(minBallSize, maxBallSzie) : maxBallSzie / 2;
     var ball = new Ball(xPos, yPos, colour, xVelocity, yVelocity, radius);
     balls.push(ball);
 }
 function randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
-document.getElementById("myCanvas").addEventListener("click", function (e) {
+canvas.addEventListener("click", function (e) {
     var xPos = e.clientX;
     var yPos = e.clientY;
     var xVelocity = randomIntFromInterval(-10, 10);
     var yVelocity = randomIntFromInterval(-10, 10);
-    if (!document.getElementById("slingshot").checked) {
+    if (!slingshotInputElement.checked) {
         addNewBall(xPos, yPos, xVelocity, yVelocity);
     }
 });
-var xPosStart, yPosStart;
-var xLineStart, yLineStart;
-var line = null;
-var startLine = false;
-document.getElementById("myCanvas").addEventListener("mousedown", function (e) {
-    _this.xPosStart = e.clientX;
-    _this.yPosStart = e.clientY;
+canvas.addEventListener("mousedown", function (e) {
+    _this.xSlingshotStart = e.clientX;
+    _this.ySlingshotStart = e.clientY;
     xLineStart = e.clientX;
     yLineStart = e.clientY;
     startLine = true;
 });
-document.getElementById("myCanvas").addEventListener("mousemove", function (e) {
-    if (document.getElementById("slingshot").checked && startLine === true) {
+canvas.addEventListener("mousemove", function (e) {
+    if (slingshotInputElement.checked && startLine === true) {
         line = new Line(xLineStart, yLineStart, e.clientX, e.clientY);
     }
 });
-document.getElementById("myCanvas").addEventListener("mouseup", function (e) {
+canvas.addEventListener("mouseup", function (e) {
     var xPos = e.clientX;
     var yPos = e.clientY;
     var xPosEnd = e.clientX;
     var yPosEnd = e.clientY;
     startLine = false;
     line = null;
-    var xVelocity = (_this.xPosStart - xPosEnd) / 10;
-    var yVelocity = (_this.yPosStart - yPosEnd) / 10;
-    if (document.getElementById("slingshot").checked) {
+    var xVelocity = (_this.xSlingshotStart - xPosEnd) / 5;
+    var yVelocity = (_this.ySlingshotStart - yPosEnd) / 5;
+    if (slingshotInputElement.checked) {
         addNewBall(xPos, yPos, xVelocity, yVelocity);
     }
 });
-document.getElementById("clear").addEventListener("click", function (e) {
+clearButton.addEventListener("click", function (e) {
     _this.balls = [];
 });
 function draw() {
-    context.clearRect(0, 0, canvasWidth, canvasHeight);
+    context.clearRect(0, 0, canvas.width, canvas.width);
     context.fillStyle = "#333";
-    context.fillRect(0, 0, canvasWidth, canvasHeight);
+    context.fillRect(0, 0, canvas.width, canvas.width);
     for (var i = 0; i < balls.length; i++) {
         var myBall = balls[i];
         myBall.update();

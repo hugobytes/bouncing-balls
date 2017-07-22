@@ -21,11 +21,27 @@ const canvas = document.querySelector("#myCanvas") as HTMLCanvasElement;
 const context = canvas.getContext("2d");
 
 /**
+ * Control HTML Input elements
+ */
+let slingshotInputElement = <HTMLInputElement>document.getElementById("slingshot");
+let randomBallSizeInput = <HTMLInputElement>document.getElementById("randomBallSize");
+let clearButton = <HTMLButtonElement>document.getElementById("clear");
+
+/**
+ * Used to fix blurry view on Retina devices
+ * @type {number}
+ */
+let canvasMultiplier = 2;
+
+/**
  * Set canvas width to take up full screen
  * @type {number}
  */
-canvas.width  = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width  = window.innerWidth * canvasMultiplier;
+canvas.height = window.innerHeight * canvasMultiplier;
+
+canvas.style.width = "100%";
+canvas.style.height = "100%";
 
 
 /**
@@ -42,22 +58,29 @@ const colours = ["#ff6138", "#ffff9d", "#beeb9f", "#79bd8f", "#00a388", "#ff9ddb
 let balls = [];
 
 /**
- * Canvas width
- * @type {number}
+ * Slingshot and line start x/y position variables
+ * Set once in 'mousedown' functions and destroyed on mouseup
  */
-const canvasWidth = canvas.width;
+let xSlingshotStart, ySlingshotStart;
+let xLineStart, yLineStart;
 
 /**
- * Canvas height
+ * Line is created on 'mousedown' and destroyed on 'mouseup' in Slingshot mode
+ * @type {any}
+ */
+let line = null; let startLine = false;
+
+/**
+ * Min and max ball sizes
  * @type {number}
  */
-const canvasHeight = canvas.height;
+let maxBallSzie = 30; let minBallSize = 10;
 
 /**
  * Checks for different browsers
  * @type {((callback:FrameRequestCallback)=>number)|any}
  */
-const reqAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+const reqAnimationFrame = (<any>window).requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
 /**
  * Ball class to construct new balls
@@ -76,8 +99,8 @@ class Ball {
     constructor(xPos, yPos, colour, xVelocity, yVelocity, radius) {
         this.radius = radius;
         this.speed = 10;
-        this.xPos = xPos;
-        this.yPos = yPos;
+        this.xPos = xPos * canvasMultiplier;
+        this.yPos = yPos * canvasMultiplier;
         this.colour = colour;
         this.xVelocity = xVelocity;
         this.yVelocity = yVelocity;
@@ -102,7 +125,7 @@ class Ball {
          * Must take a value less than 1; larger balls have less bounce
          * @type {number}
          */
-        const bounce = 0.63 * (30/(radius + 15)); // Max bounce = 0.945, min bounce = 0.63
+        const bounce = minBallSize/(radius + 0.01);
         const traction = 0.8;
 
         /**
@@ -176,10 +199,10 @@ class Line {
     private yLineEnd: number;
 
     constructor(xLineStart, yLineStart, xLineEnd, yLineEnd) {
-        this.xLineStart = xLineStart;
-        this.yLineStart = yLineStart;
-        this.xLineEnd = xLineEnd;
-        this.yLineEnd = yLineEnd;
+        this.xLineStart = xLineStart * canvasMultiplier;
+        this.yLineStart = yLineStart * canvasMultiplier;
+        this.xLineEnd = xLineEnd * canvasMultiplier;
+        this.yLineEnd = yLineEnd * canvasMultiplier;
     }
 
     public drawLine = () => {
@@ -187,7 +210,7 @@ class Line {
         context.moveTo(this.xLineStart, this.yLineStart);
         context.lineTo(this.xLineEnd, this.yLineEnd);
         context.lineWidth = 2;
-        context.strokeStyle = "rgba(255,255,255,0.25)";
+        context.strokeStyle = "rgba(255,255,255,0.15)";
         context.stroke();
     }
 }
@@ -199,12 +222,14 @@ class Line {
 function addNewBall(xPos, yPos, xVelocity, yVelocity) {
     let colour = colours[randomIntFromInterval(0, colours.length)];
 
+    let randomBallSizeChecked = randomBallSizeInput.checked;
+
     /**
      * If randomBallSize input is checked, generate random size balls, otherwise use medium sizes ball
      * Larger ball sizes will have less bounce than smaller ball sizes
      * @type {number}
      */
-    let radius = document.getElementById('randomBallSize').checked? randomIntFromInterval(5,15) : 10;
+    let radius = randomBallSizeChecked? randomIntFromInterval(minBallSize, maxBallSzie) : maxBallSzie/2;
 
     let ball = new Ball(xPos, yPos, colour, xVelocity, yVelocity, radius);
     balls.push(ball);
@@ -220,7 +245,7 @@ function randomIntFromInterval(min,max) {
 /**
  * Add click listener for canvas
  */
-document.getElementById("myCanvas").addEventListener("click", (e) => {
+canvas.addEventListener("click", (e) => {
     let xPos = e.clientX;
     let yPos = e.clientY;
 
@@ -231,22 +256,18 @@ document.getElementById("myCanvas").addEventListener("click", (e) => {
     let xVelocity = randomIntFromInterval(-10,10);
     let yVelocity = randomIntFromInterval(-10,10);
 
-    if (!document.getElementById("slingshot").checked) {
+    if (!slingshotInputElement.checked) {
         addNewBall(xPos, yPos, xVelocity, yVelocity);
     }
-});
 
-let xPosStart, yPosStart;
-let xLineStart, yLineStart;
-let line = null;
-let startLine = false;
+});
 
 /**
  * Listeners for slingshot mode
  */
-document.getElementById("myCanvas").addEventListener("mousedown", (e) => {
-    this.xPosStart = e.clientX;
-    this.yPosStart = e.clientY;
+canvas.addEventListener("mousedown", (e) => {
+    this.xSlingshotStart = e.clientX;
+    this.ySlingshotStart = e.clientY;
     xLineStart = e.clientX;
     yLineStart = e.clientY;
     startLine = true;
@@ -255,8 +276,8 @@ document.getElementById("myCanvas").addEventListener("mousedown", (e) => {
 /**
  * Draw slingshot line
  */
-document.getElementById("myCanvas").addEventListener("mousemove", (e) => {
-    if (document.getElementById("slingshot").checked && startLine === true) {
+canvas.addEventListener("mousemove", (e) => {
+    if (slingshotInputElement.checked && startLine === true) {
         line = new Line(xLineStart, yLineStart, e.clientX, e.clientY);
     }
 });
@@ -264,7 +285,7 @@ document.getElementById("myCanvas").addEventListener("mousemove", (e) => {
 /**
  * Release slingshot
  */
-document.getElementById("myCanvas").addEventListener("mouseup", (e) => {
+canvas.addEventListener("mouseup", (e) => {
     let xPos = e.clientX;
     let yPos = e.clientY;
     let xPosEnd = e.clientX;
@@ -275,13 +296,14 @@ document.getElementById("myCanvas").addEventListener("mouseup", (e) => {
 
     /**
      * Velocities increase the more you drag the slingshot
+     * Slingshot start positions are set on mouse down and used here
      * @type {number}
      * @type {number}
      */
-    let xVelocity = (this.xPosStart - xPosEnd)/10;
-    let yVelocity = (this.yPosStart - yPosEnd)/10;
+    let xVelocity = (this.xSlingshotStart - xPosEnd)/5;
+    let yVelocity = (this.ySlingshotStart - yPosEnd)/5;
 
-    if (document.getElementById("slingshot").checked) {
+    if (slingshotInputElement.checked) {
         addNewBall(xPos, yPos, xVelocity, yVelocity);
     }
 });
@@ -289,7 +311,7 @@ document.getElementById("myCanvas").addEventListener("mouseup", (e) => {
 /**
  * Add click listener for clear
  */
-document.getElementById("clear").addEventListener("click", (e) => {
+clearButton.addEventListener("click", (e) => {
     this.balls = [];
 });
 
@@ -302,7 +324,7 @@ function draw() {
     /**
      * Clear whole canvas
      */
-    context.clearRect(0, 0, canvasWidth, canvasHeight);
+    context.clearRect(0, 0, canvas.width, canvas.width);
 
     /**
      * Dark background theme for canvas
@@ -314,7 +336,7 @@ function draw() {
      * Fill canvas with dark bg
      * @method fillRect
      */
-    context.fillRect(0,0,canvasWidth, canvasHeight);
+    context.fillRect(0, 0, canvas.width, canvas.width);
 
     /**
      * Update each ball's position
