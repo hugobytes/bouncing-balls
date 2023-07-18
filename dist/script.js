@@ -16,7 +16,7 @@ var line = null;
 var startLine = false;
 var maxBallSzie = 30;
 var minBallSize = 10;
-var reqAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
+var reqAnimationFrame = window.requestAnimationFrame;
 var Ball = (function () {
     function Ball(xPos, yPos, colour, xVelocity, yVelocity, radius) {
         var _this = this;
@@ -57,7 +57,6 @@ var Ball = (function () {
             context.fill();
         };
         this.radius = radius;
-        this.speed = 10;
         this.xPos = xPos * canvasMultiplier;
         this.yPos = yPos * canvasMultiplier;
         this.colour = colour;
