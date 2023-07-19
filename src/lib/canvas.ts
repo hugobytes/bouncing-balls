@@ -1,6 +1,6 @@
 import slingshot from "../features/slingshotMode";
 import balls from "./balls";
-import { RETINA_DISPLAY_MULTIPLIER } from "./globals";
+import { adjustForRetinaDisplay } from "./settings";
 
 const canvas = document.querySelector("#myCanvas") as HTMLCanvasElement;
 const context = canvas.getContext("2d");
@@ -22,8 +22,8 @@ export default {
     balls.drawNextPositions();
   },
   resizeCanvas() {
-    canvas.width = window.innerWidth * RETINA_DISPLAY_MULTIPLIER;
-    canvas.height = window.innerHeight * RETINA_DISPLAY_MULTIPLIER;
+    canvas.width = adjustForRetinaDisplay(window.innerWidth);
+    canvas.height = adjustForRetinaDisplay(window.innerHeight);
     canvas.style.width = "100%";
     canvas.style.height = "100%";
   }

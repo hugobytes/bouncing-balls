@@ -1,5 +1,5 @@
 import canvas from "./canvas";
-import { adjustForRetinaDisplay } from "./globals";
+import { adjustForRetinaDisplay } from "./settings";
 
 export class SlingshotLine {
   private xPositionOnStartDrag: number;

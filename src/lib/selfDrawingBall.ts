@@ -1,5 +1,5 @@
 import canvas from "./canvas";
-import { GRAVITY_PULL_IN_PX, adjustForRetinaDisplay, TRACTION } from "./globals";
+import { GRAVITY_PULL_IN_PX, adjustForRetinaDisplay, TRACTION } from "./settings";
 
 export default class SelfDrawingBall {
   private radius: number;

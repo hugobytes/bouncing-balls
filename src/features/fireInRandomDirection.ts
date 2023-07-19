@@ -1,3 +1,19 @@
-export function addMouseClickListener() {
+import canvas from "../lib/canvas";
+import { randomNumberFrom } from "../lib/utils";
+import slingshotMode from "./slingshotMode";
 
+export function addMouseClickListener() {
+  canvas.canvas().addEventListener("click", (e) => {
+    if (slingshotMode.isOn()) {
+      return
+    }
+
+    const xMousePosition = e.clientX;
+    const yMousePosition = e.clientY;
+
+    const xVelocity: number = randomNumberFrom(-10, 10);
+    const yVelocity: number = randomNumberFrom(-10, 10);
+
+    addNewBall(xMousePosition, yMousePosition, xVelocity, yVelocity);
+  });
 }
