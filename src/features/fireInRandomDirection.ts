@@ -1,6 +1,6 @@
 import canvas from "../lib/canvas";
 import { randomNumberFrom } from "../lib/utils";
-import slingshotMode from "./slingshotMode";
+import { slingshotMode } from "../lib/settings";
 
 export function addMouseClickListener() {
   canvas.canvas().addEventListener("click", (e) => {

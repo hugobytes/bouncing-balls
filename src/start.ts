@@ -1,6 +1,6 @@
 import canvas from "./lib/canvas"
 import { addMouseClickListener } from "./features/fireInRandomDirection"
-import { addMouseDragListener } from "./features/slingshotMode"
+import { addMouseDragListener } from "./features/slingshot"
 import { handleResetButtonClick } from "./features/resetBalls"
 
 addMouseClickListener();
