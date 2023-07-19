@@ -1,10 +1,12 @@
-let balls = []
+import SelfDrawingBall from "./selfDrawingBall"
+
+let balls: SelfDrawingBall[] = []
 
 export default {
   balls() {
     return balls
   },
-  addNewBall(ball) {
+  addNewBall(ball: SelfDrawingBall) {
     balls.push(ball)
   },
   destroyAll() {
@@ -12,7 +14,7 @@ export default {
   },
   drawNextPositions() {
     for (const ball of balls) {
-      ball.drawNextPosition()
+      ball.moveBallWithGravityAndVelocity()
     }
   }
 }

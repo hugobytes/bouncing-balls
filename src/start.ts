@@ -7,6 +7,8 @@ addMouseClickListener();
 addMouseDragListener();
 handleResetButtonClick();
 
+addEventListener("resize", () => canvas.resizeCanvas());
+
 (function drawCanvas() {
   canvas.clear();
   canvas.drawNextFrame();
