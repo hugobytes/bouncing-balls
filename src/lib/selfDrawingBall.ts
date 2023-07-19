@@ -44,7 +44,7 @@ export default class SelfDrawingBall {
   private detectAndHandleBounces() {
     if (this.hasBouncedOnRightSideOfCanvas()) {
       this.xVelocity = -this.xVelocity * this.velocityReducerFromBounce;
-      this.xPos = canvas.canvas()!.width - this.radius;
+      this.xPos = canvas.element()!.width - this.radius;
     }
 
     if (this.hasBouncedOnLeftSideOfCanvas()) {
@@ -54,7 +54,7 @@ export default class SelfDrawingBall {
 
     if (this.hasBouncedOnTopOfCanvas()) {
       this.yVelocity = -this.yVelocity * this.velocityReducerFromBounce;
-      this.yPos = canvas.canvas()!.height - this.radius;
+      this.yPos = canvas.element()!.height - this.radius;
       this.xVelocity *= TRACTION;
     }
 
@@ -65,7 +65,7 @@ export default class SelfDrawingBall {
   }
 
   private hasBouncedOnRightSideOfCanvas() {
-    return this.xPos + this.radius >= canvas.canvas()!.width
+    return this.xPos + this.radius >= canvas.element()!.width
   }
 
   private hasBouncedOnLeftSideOfCanvas() {
@@ -73,7 +73,7 @@ export default class SelfDrawingBall {
   }
 
   private hasBouncedOnTopOfCanvas() {
-    return this.yPos + this.radius >= canvas.canvas()!.height
+    return this.yPos + this.radius >= canvas.element()!.height
   }
 
   private hasBouncedOnBottomOfCanvas() {

@@ -5,7 +5,7 @@ import { SlingshotLine } from "../lib/slingshotLine";
 let line: SlingshotLine
 
 export function addMouseDragListener() {
-  canvas.canvas().addEventListener("mousedown", (e) => {
+  canvas.element().addEventListener("mousedown", (e) => {
     if (!slingshotMode.isOn()) {
       return
     }
@@ -14,7 +14,7 @@ export function addMouseDragListener() {
   });
 
 
-  canvas.canvas().addEventListener("mousemove", (e) => {
+  canvas.element().addEventListener("mousemove", (e) => {
     if (!slingshotMode.isOn()) {
       return
     }
@@ -33,7 +33,7 @@ export default {
     return slingshotModeEnabled
   },
 
-  drawSlingshotLineIfActive() {
+  drawSlingshotLine() {
   }
 }
 

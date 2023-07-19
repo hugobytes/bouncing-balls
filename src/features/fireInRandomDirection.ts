@@ -3,7 +3,7 @@ import { randomNumberFrom } from "../lib/utils";
 import { slingshotMode } from "../lib/settings";
 
 export function addMouseClickListener() {
-  canvas.canvas().addEventListener("click", (e) => {
+  canvas.element().addEventListener("click", (e) => {
     if (slingshotMode.isOn()) {
       return
     }
